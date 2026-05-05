@@ -100,6 +100,16 @@ Superpowers is available via the [official Codex plugin marketplace](https://git
   droid plugin install superpowers@superpowers
   ```
 
+### Qwen Code
+
+Superpowers supports Qwen Code natively. Ensure the repository is checked out and the extension is registered according to Qwen Code's extension documentation.
+
+```bash
+# Clone the repository
+git clone https://github.com/obra/superpowers.git ~/.qwen/extensions/superpowers
+```
+*(Note: Qwen Code will automatically discover the skills via the `qwen-extension.json` file in the repository root).*
+
 ### Gemini CLI
 
 - Install the extension:
