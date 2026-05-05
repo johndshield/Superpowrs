@@ -167,6 +167,8 @@ already use it in another harness.
 
 7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
 
+Use **requesting-security-review** before merge when changes affect security boundaries.
+
 **The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
 
 ## What's Inside
@@ -179,6 +181,9 @@ already use it in another harness.
 **Debugging**
 - **systematic-debugging** - 4-phase root cause process (includes root-cause-tracing, defense-in-depth, condition-based-waiting techniques)
 - **verification-before-completion** - Ensure it's actually fixed
+
+**Security**
+- **requesting-security-review** - Focused security review for risky changes involving auth, authorization, sensitive data, external input, files, webhooks, admin tools, multi-tenancy, dependency trust, or agent/tool execution
 
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
