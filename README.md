@@ -151,6 +151,16 @@ already use it in another harness.
   copilot plugin install superpowers@superpowers-marketplace
   ```
 
+### Antigravity IDE
+
+Tell Antigravity:
+
+```
+Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.antigravity/INSTALL.md
+```
+
+**Detailed docs:** [docs/README.antigravity.md](docs/README.antigravity.md)
+
 ## The Basic Workflow
 
 1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
