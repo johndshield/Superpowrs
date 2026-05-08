@@ -4,7 +4,7 @@ Superpowers is a complete software development methodology for your coding agent
 
 ## Quickstart
 
-Give your agent Superpowers: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [Factory Droid](#factory-droid), [Gemini CLI](#gemini-cli), [OpenCode](#opencode), [Cursor](#cursor), [GitHub Copilot CLI](#github-copilot-cli).
+Give your agent Superpowers: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [Factory Droid](#factory-droid), [Gemini CLI](#gemini-cli), [OpenCode](#opencode), [Cursor](#cursor), [GitHub Copilot CLI](#github-copilot-cli), [CodeBuddy CLI](#codebuddy-cli).
 
 ## How it works
 
@@ -150,6 +150,22 @@ already use it in another harness.
   ```bash
   copilot plugin install superpowers@superpowers-marketplace
   ```
+
+### CodeBuddy CLI
+
+- Register the marketplace:
+
+  ```bash
+  /plugin marketplace add obra/superpowers-marketplace
+  ```
+
+- Install the plugin:
+
+  ```bash
+  /plugin install superpowers@superpowers-marketplace
+  ```
+
+- Verify by asking: "Let's make a todo list" — `brainstorming` should auto-trigger. If it doesn't, make sure CodeBuddy's built-in PlanMode is off (toggle with `Tab` if you see a `[plan]` marker before your prompt).
 
 ## The Basic Workflow
 
