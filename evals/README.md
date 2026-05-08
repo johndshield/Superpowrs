@@ -43,6 +43,9 @@ uv run drill run spec-writing-blind-spot -b claude-opus-4-6 --n 5
 # Sweep across multiple backends
 uv run drill run spec-writing-blind-spot --models claude-opus-4-6,claude-opus-4-7 --n 10
 
+# Run against Pi, loading the local Superpowers package via -e ${SUPERPOWERS_ROOT}
+uv run drill run triggering-writing-plans -b pi
+
 # Compare results
 uv run drill compare spec-writing-blind-spot
 
@@ -72,6 +75,7 @@ uv run drill list
 | `codex` | Codex CLI | — |
 | `gemini` | Gemini CLI | auto-gemini-3 |
 | `gemini-2-5-flash` | Gemini CLI | gemini-2.5-flash |
+| `pi` | Pi coding agent | configured Pi default |
 
 ## Project structure
 

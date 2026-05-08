@@ -4,7 +4,7 @@ Superpowers is a complete software development methodology for your coding agent
 
 ## Quickstart
 
-Give your agent Superpowers: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [Factory Droid](#factory-droid), [Gemini CLI](#gemini-cli), [OpenCode](#opencode), [Cursor](#cursor), [GitHub Copilot CLI](#github-copilot-cli).
+Give your agent Superpowers: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [Factory Droid](#factory-droid), [Gemini CLI](#gemini-cli), [Pi](#pi), [OpenCode](#opencode), [Cursor](#cursor), [GitHub Copilot CLI](#github-copilot-cli).
 
 ## How it works
 
@@ -113,6 +113,22 @@ Superpowers is available via the [official Codex plugin marketplace](https://git
   ```bash
   gemini extensions update superpowers
   ```
+
+### Pi
+
+Install Superpowers as a Pi package from this repository:
+
+```bash
+pi install git:github.com/obra/superpowers
+```
+
+For local development, run Pi with this checkout loaded as a temporary package:
+
+```bash
+pi -e /path/to/superpowers
+```
+
+The Pi package loads the Superpowers skills and a small extension that injects the `using-superpowers` bootstrap at session startup and again after compaction. Pi has native skills, so no compatibility `Skill` tool is required. Subagent and task-list tools remain optional Pi companion packages.
 
 ### OpenCode
 
