@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Iterator
 
 import httpx
@@ -111,7 +111,9 @@ class GraphClient:
             "$orderby=receivedDateTime desc",
         ]
         if since is not None:
-            params.append(f"$filter=receivedDateTime ge {since.isoformat()}")
+            since_utc = since.astimezone(timezone.utc) if since.tzinfo else since.replace(tzinfo=timezone.utc)
+            since_str = since_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+            params.append(f"$filter=receivedDateTime ge {since_str}")
         url = "/me/mailFolders/inbox/messages?" + "&".join(params)
         yielded = 0
         while url and yielded < limit:
