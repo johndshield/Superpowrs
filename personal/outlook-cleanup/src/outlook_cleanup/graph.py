@@ -56,26 +56,48 @@ class GraphClient:
         r.raise_for_status()
         return r
 
-    def list_folders(self) -> dict[str, str]:
-        """Return {displayName: id} for all top-level mail folders."""
+    def list_folders(self, *, recursive: bool = True) -> dict[str, str]:
+        """Return {path: id} for mail folders.
+
+        If recursive=True, walks the full folder tree and uses paths like
+        "Inbox/Permanently Delete" as keys. Otherwise only top-level
+        displayNames.
+        """
         folders: dict[str, str] = {}
-        url = "/me/mailFolders?$top=100"
-        while url:
-            r = self._request("GET", url)
-            data = r.json()
-            for f in data.get("value", []):
-                folders[f["displayName"]] = f["id"]
-            url = data.get("@odata.nextLink", "").replace(GRAPH_BASE, "") or None
+
+        def walk(url: str, prefix: str) -> None:
+            while url:
+                r = self._request("GET", url)
+                data = r.json()
+                for f in data.get("value", []):
+                    name = f["displayName"]
+                    path = f"{prefix}/{name}" if prefix else name
+                    folders[path] = f["id"]
+                    if recursive and f.get("childFolderCount", 0) > 0:
+                        walk(f"/me/mailFolders/{f['id']}/childFolders?$top=100", path)
+                url = data.get("@odata.nextLink", "").replace(GRAPH_BASE, "") or None
+
+        walk("/me/mailFolders?$top=100", "")
         return folders
 
     def find_folder_id(self, display_name: str) -> str:
         folders = self.list_folders()
-        if display_name not in folders:
-            available = ", ".join(sorted(folders)) or "(none)"
+        # Exact path match first
+        if display_name in folders:
+            return folders[display_name]
+        # Fall back to leaf-name match (folder name anywhere in tree)
+        leaf_matches = {p: i for p, i in folders.items() if p.rsplit("/", 1)[-1] == display_name}
+        if len(leaf_matches) == 1:
+            return next(iter(leaf_matches.values()))
+        if len(leaf_matches) > 1:
+            paths = ", ".join(sorted(leaf_matches))
             raise KeyError(
-                f"Folder {display_name!r} not found. Available top-level folders: {available}"
+                f"Folder name {display_name!r} is ambiguous. Use a full path. Matches: {paths}"
             )
-        return folders[display_name]
+        available = ", ".join(sorted(folders)) or "(none)"
+        raise KeyError(
+            f"Folder {display_name!r} not found. Available folders: {available}"
+        )
 
     def list_inbox_messages(
         self,

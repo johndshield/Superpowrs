@@ -5,37 +5,83 @@ from outlook_cleanup.graph import GRAPH_BASE, GraphClient
 
 
 @respx.mock
-def test_list_folders_pages():
+def test_list_folders_pages_with_children():
     page1 = {
         "value": [
-            {"displayName": "Inbox", "id": "inbox-id"},
-            {"displayName": "Permanently Delete", "id": "purge-id"},
+            {
+                "displayName": "Inbox",
+                "id": "inbox-id",
+                "childFolderCount": 1,
+            },
+            {
+                "displayName": "Archive",
+                "id": "archive-id",
+                "childFolderCount": 0,
+            },
         ],
-        "@odata.nextLink": f"{GRAPH_BASE}/me/mailFolders?page=2",
     }
-    page2 = {
-        "value": [{"displayName": "Archive", "id": "archive-id"}],
+    children = {
+        "value": [
+            {
+                "displayName": "Permanently Delete",
+                "id": "purge-id",
+                "childFolderCount": 0,
+            }
+        ]
     }
     respx.get(f"{GRAPH_BASE}/me/mailFolders?$top=100").mock(
         return_value=httpx.Response(200, json=page1)
     )
-    respx.get(f"{GRAPH_BASE}/me/mailFolders?page=2").mock(
-        return_value=httpx.Response(200, json=page2)
+    respx.get(f"{GRAPH_BASE}/me/mailFolders/inbox-id/childFolders?$top=100").mock(
+        return_value=httpx.Response(200, json=children)
     )
 
     with GraphClient("tok") as gc:
         folders = gc.list_folders()
     assert folders == {
         "Inbox": "inbox-id",
-        "Permanently Delete": "purge-id",
+        "Inbox/Permanently Delete": "purge-id",
         "Archive": "archive-id",
     }
 
 
 @respx.mock
+def test_find_folder_id_by_leaf_name():
+    respx.get(f"{GRAPH_BASE}/me/mailFolders?$top=100").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "value": [
+                    {"displayName": "Inbox", "id": "inbox-id", "childFolderCount": 1}
+                ]
+            },
+        )
+    )
+    respx.get(f"{GRAPH_BASE}/me/mailFolders/inbox-id/childFolders?$top=100").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "value": [
+                    {
+                        "displayName": "Permanently Delete",
+                        "id": "purge-id",
+                        "childFolderCount": 0,
+                    }
+                ]
+            },
+        )
+    )
+    with GraphClient("tok") as gc:
+        assert gc.find_folder_id("Permanently Delete") == "purge-id"
+
+
+@respx.mock
 def test_find_folder_id_missing_raises():
     respx.get(f"{GRAPH_BASE}/me/mailFolders?$top=100").mock(
-        return_value=httpx.Response(200, json={"value": [{"displayName": "Inbox", "id": "i"}]})
+        return_value=httpx.Response(
+            200,
+            json={"value": [{"displayName": "Inbox", "id": "i", "childFolderCount": 0}]},
+        )
     )
     with GraphClient("tok") as gc:
         try:
