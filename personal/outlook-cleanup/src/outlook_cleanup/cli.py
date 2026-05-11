@@ -39,15 +39,19 @@ def auth_login() -> None:
 
 @folders_app.command("list")
 def folders_list() -> None:
-    """List top-level mail folders; useful to confirm the Permanently Delete folder exists."""
+    """List mail folders; useful to confirm the Permanently Delete folder exists."""
     cfg = load_config()
     token = auth.get_token(cfg)
     with GraphClient(token) as gc:
         folders = gc.list_folders()
+        try:
+            purge_id = gc.find_folder_id(cfg.purge_folder_name)
+        except KeyError:
+            purge_id = None
     for name, fid in sorted(folders.items()):
-        marker = "  <-- purge target" if name == cfg.purge_folder_name else ""
+        marker = "  <-- purge target" if fid == purge_id else ""
         console.print(f"{name}  [dim]{fid}[/]{marker}")
-    if cfg.purge_folder_name not in folders:
+    if purge_id is None:
         console.print(
             f"[red]Folder {cfg.purge_folder_name!r} not found. "
             f"Create it in Outlook or update purge_folder_name in {config_path()}.[/]"
