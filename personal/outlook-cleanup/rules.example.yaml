@@ -1,0 +1,15 @@
+keep:
+  senders:
+    - boss@yourcompany.com
+  domains:
+    - yourcompany.com
+
+purge:
+  senders:
+    - news@spammer.example
+  domains:
+    - marketing.example
+    - sale.example
+  subject_patterns:
+    - '^\[ADVERT\]'
+    - 'unsubscribe at'
