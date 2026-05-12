@@ -138,6 +138,20 @@ Each run writes a JSON decision log to
    generalizes, it suggests a rule like `domain:promo.example`.
 4. After you approve moves, the tool offers to add those suggested rules to
    `rules.yaml` so the next run matches them without an LLM call.
+5. **Auto-learn from manual moves.** Before classifying the inbox, `run` reads
+   the entire Permanently Delete folder. Any sender or domain that appears
+   2+ times in there is added to `purge.senders` / `purge.domains`
+   automatically (allow-listed entries are skipped). Standalone command:
+
+   ```bash
+   outlook-cleanup learn
+   ```
+
+   To turn off the pre-scan during `run`:
+
+   ```bash
+   outlook-cleanup run --no-learn
+   ```
 
 You can edit `~/.config/outlook-cleanup/rules.yaml` directly at any time.
 

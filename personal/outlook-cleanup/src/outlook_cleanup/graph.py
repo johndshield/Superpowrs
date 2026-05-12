@@ -105,6 +105,16 @@ class GraphClient:
         limit: int = 200,
         since: datetime | None = None,
     ) -> Iterator[Message]:
+        yield from self.list_folder_messages("inbox", limit=limit, since=since)
+
+    def list_folder_messages(
+        self,
+        folder_id: str,
+        *,
+        limit: int | None = None,
+        since: datetime | None = None,
+    ) -> Iterator[Message]:
+        """Yield messages from a folder. limit=None means no cap."""
         params = [
             f"$select={MESSAGE_SELECT}",
             "$top=50",
@@ -114,15 +124,15 @@ class GraphClient:
             since_utc = since.astimezone(timezone.utc) if since.tzinfo else since.replace(tzinfo=timezone.utc)
             since_str = since_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
             params.append(f"$filter=receivedDateTime ge {since_str}")
-        url = "/me/mailFolders/inbox/messages?" + "&".join(params)
+        url = f"/me/mailFolders/{folder_id}/messages?" + "&".join(params)
         yielded = 0
-        while url and yielded < limit:
+        while url:
             r = self._request("GET", url)
             data = r.json()
             for raw in data.get("value", []):
                 yield Message.from_graph(raw)
                 yielded += 1
-                if yielded >= limit:
+                if limit is not None and yielded >= limit:
                     return
             url = data.get("@odata.nextLink", "").replace(GRAPH_BASE, "") or None
 
