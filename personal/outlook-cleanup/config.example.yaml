@@ -1,0 +1,18 @@
+tenant_id: common
+client_id: REPLACE_WITH_AZURE_APP_CLIENT_ID
+purge_folder_name: Permanently Delete
+
+# Optional. If unset, the script reads $ANTHROPIC_API_KEY from the environment.
+anthropic_api_key: null
+
+model: claude-sonnet-4-6
+max_messages: 200
+
+preferences: |
+  You are triaging the user's Outlook inbox. They consider an email UNWANTED
+  when it is irrelevant marketing, mass unsolicited mail, off-topic for their
+  work, or the kind of message they routinely delete without reading.
+  Newsletters they never asked for, sales promotions, vendor cold outreach,
+  and notification spam are all UNWANTED. Anything from a human colleague,
+  anything that looks like a real conversation, security alerts for their own
+  accounts, receipts, calendar invites, and bills are KEEP.

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "outlook-cleanup"
+version = "0.1.0"
+description = "Classify and move unwanted Outlook emails to a Permanently Delete folder."
+requires-python = ">=3.11"
+dependencies = [
+    "msal>=1.28",
+    "httpx>=0.27",
+    "anthropic>=0.40",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pyyaml>=6.0",
+    "rich>=13.7",
+    "typer>=0.12",
+    "platformdirs>=4.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-mock>=3.12",
+    "respx>=0.21",
+]
+
+[project.scripts]
+outlook-cleanup = "outlook_cleanup.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
